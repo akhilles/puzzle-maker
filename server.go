@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"local-search/puzzle"
+	"puzzle-maker/puzzle"
 
 	"github.com/gorilla/mux"
 )
