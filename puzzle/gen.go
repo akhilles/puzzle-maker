@@ -2,9 +2,9 @@ package puzzle
 
 import "math/rand"
 
+// ConstraintMatrix returns a matrix containing the maximum legal value for each cell in the puzzle.
 func ConstraintMatrix(n int) []int {
-	var cm []int
-	cm = make([]int, n*n-1)
+	cm := make([]int, n*n-1)
 
 	for index := range cm {
 		left := index % n
@@ -27,10 +27,10 @@ func ConstraintMatrix(n int) []int {
 	return cm
 }
 
+// RandomPuzzle returns a random legal puzzle of size n along with its constraint matrix.
 func RandomPuzzle(n int) ([]int, []int) {
 	cm := ConstraintMatrix(n)
-	var rp []int
-	rp = make([]int, len(cm))
+	rp := make([]int, len(cm))
 
 	for index, max := range cm {
 		rp[index] = rand.Intn(max) + 1
