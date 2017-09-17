@@ -21,7 +21,7 @@ func main() {
 
 func randomPuzzle(w http.ResponseWriter, r *http.Request) {
 	n, _ := strconv.Atoi(r.URL.Query().Get("n"))
-	rp, _ := puzzle.RandomPuzzle(n)
+	rp, _, _ := puzzle.RandomPuzzle(n)
 	json, _ := json.Marshal(rp)
 	w.Write(json)
 }
