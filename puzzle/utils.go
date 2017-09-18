@@ -74,14 +74,3 @@ func PrintPuzzle(n int, puzzle []int) {
 	fmt.Println()
 	fmt.Println()
 }
-
-// Filter filters a slice of ints.
-func Filter(in []int, f func(int) bool) []int {
-	out := make([]int, 0)
-	for _, v := range in {
-		if f(v) {
-			out = append(out, v)
-		}
-	}
-	return out
-}
