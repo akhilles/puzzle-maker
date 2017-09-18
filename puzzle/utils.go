@@ -53,19 +53,17 @@ func ConstraintMatrix(n int) []int {
 func RandomPuzzle(n int) ([]int, []int, [][]int) {
 	cm := ConstraintMatrix(n)
 	rp := make([]int, len(cm))
-	vm := make([][]int, len(cm))
+	vm := make([][]int, len(cm)+1)
 
 	for index, max := range cm {
 		rp[index] = rand.Intn(max) + 1
 		vm[index] = validMoves(n, index, rp[index])
 	}
 
-	fmt.Print(vm)
-
 	return rp, cm, vm
 }
 
-// PrintPuzzle prints the puzzle in the command line
+// PrintPuzzle prints the puzzle in the command line.
 func PrintPuzzle(n int, puzzle []int) {
 	for index, val := range puzzle {
 		fmt.Printf("%3d", val)
@@ -75,4 +73,15 @@ func PrintPuzzle(n int, puzzle []int) {
 	}
 	fmt.Println()
 	fmt.Println()
+}
+
+// Filter filters a slice of ints.
+func Filter(in []int, f func(int) bool) []int {
+	out := make([]int, 0)
+	for _, v := range in {
+		if f(v) {
+			out = append(out, v)
+		}
+	}
+	return out
 }
