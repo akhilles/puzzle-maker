@@ -8,7 +8,7 @@ func Evaluate(p []int) int {
 // BFS returns a matrix containing the minimum number of moves needed to reach that cell from the start cell.
 func BFS(n int, p []int, vm [][]int) []int {
 	minDist := make([]int, n*n)
-	q := []int{0}
+	q := make([]int, 1, n*n)
 	accum, depth, nodes := 0, 1, 1
 
 	for len(q) > 0 {
