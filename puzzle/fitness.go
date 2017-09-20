@@ -11,9 +11,9 @@ func Evaluate(n int, vm [][]int) (int, []int) {
 				unreached++
 			}
 		}
-		return 1 - unreached, depthBFS
+		return 1 - unreached + n*n, depthBFS
 	}
-	return moves, depthBFS
+	return moves + n*n, depthBFS
 }
 
 // BFS returns a matrix containing the minimum number of moves needed to reach that cell from the start cell.
