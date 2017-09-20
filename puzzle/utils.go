@@ -5,9 +5,9 @@ import "fmt"
 
 type Puzzle struct {
 	n                            int
-	Cells, constraints, depthBFS []int
+	Cells, constraints, DepthBFS []int
 	moves                        [][]int
-	fitness                      int
+	Fitness                      int
 }
 
 func validMoves(n int, cell int, val int) []int {
@@ -72,23 +72,26 @@ func RandomPuzzle(n int) *Puzzle {
 	return &Puzzle{n, rp, cm, depthBFS, vm, fitness}
 }
 
-// Print prints a puzzle to the command line
-func (p *Puzzle) Print() {
-	for index, val := range p.Cells {
-		fmt.Printf("%3d", val)
-		if (index+1)%p.n == 0 {
-			fmt.Println()
+func (p *Puzzle) String() string {
+	out := ""
+
+	/*
+		for index, val := range p.Cells {
+			out += fmt.Sprintf("%3d", val)
+			if (index+1)%p.n == 0 {
+				out += fmt.Sprintln()
+			}
 		}
-	}
-	fmt.Println()
-	fmt.Println()
-	for index, val := range p.depthBFS {
-		fmt.Printf("%3d", val)
-		if (index+1)%p.n == 0 {
-			fmt.Println()
+		out += fmt.Sprintln()
+		out += fmt.Sprintln()
+		for index, val := range p.DepthBFS {
+			out += fmt.Sprintf("%3d", val)
+			if (index+1)%p.n == 0 {
+				out += fmt.Sprintln()
+			}
 		}
-	}
-	fmt.Println()
-	fmt.Println()
-	fmt.Println(p.fitness)
+	*/
+
+	out += fmt.Sprint("fitness: ") + fmt.Sprintln(p.Fitness-p.n*p.n)
+	return out
 }
