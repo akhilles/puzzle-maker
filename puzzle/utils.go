@@ -4,7 +4,8 @@ import "math/rand"
 import "fmt"
 
 type Puzzle struct {
-	cells, constraints, depthBFS []int
+	n                            int
+	Cells, constraints, depthBFS []int
 	moves                        [][]int
 	fitness                      int
 }
@@ -66,19 +67,28 @@ func RandomPuzzle(n int) *Puzzle {
 		vm[index] = validMoves(n, index, rp[index])
 	}
 
-	fitness, depthBFS := Evaluate(n, rp, vm)
+	fitness, depthBFS := Evaluate(n, vm)
 
-	return &Puzzle{rp, cm, depthBFS, vm, fitness}
+	return &Puzzle{n, rp, cm, depthBFS, vm, fitness}
 }
 
-// PrintPuzzle prints the puzzle in the command line.
-func PrintPuzzle(p) {
-	for index, val := range puzzle {
+// Print prints a puzzle to the command line
+func (p *Puzzle) Print() {
+	for index, val := range p.Cells {
 		fmt.Printf("%3d", val)
-		if (index+1)%n == 0 {
+		if (index+1)%p.n == 0 {
 			fmt.Println()
 		}
 	}
 	fmt.Println()
 	fmt.Println()
+	for index, val := range p.depthBFS {
+		fmt.Printf("%3d", val)
+		if (index+1)%p.n == 0 {
+			fmt.Println()
+		}
+	}
+	fmt.Println()
+	fmt.Println()
+	fmt.Println(p.fitness)
 }

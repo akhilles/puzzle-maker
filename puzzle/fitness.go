@@ -1,8 +1,8 @@
 package puzzle
 
 // Evaluate returns the fitness score of a puzzle.
-func Evaluate(n int, p []int, vm [][]int) (int, []int) {
-	depthBFS := BFS(n, p, vm)
+func Evaluate(n int, vm [][]int) (int, []int) {
+	depthBFS := BFS(n, vm)
 	moves := depthBFS[len(depthBFS)-1]
 	if moves == 0 {
 		unreached := 0

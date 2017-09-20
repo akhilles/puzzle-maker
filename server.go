@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -22,11 +21,9 @@ func main() {
 
 func random(w http.ResponseWriter, r *http.Request) {
 	n, _ := strconv.Atoi(r.URL.Query().Get("n"))
-	rp, _, vm := puzzle.RandomPuzzle(n)
-	fitness, minDist := puzzle.Evaluate(n, rp, vm)
-	puzzle.PrintPuzzle(n, minDist)
-	fmt.Println(fitness)
+	p := puzzle.RandomPuzzle(n)
+	p.Print()
 
-	json, _ := json.Marshal(rp)
+	json, _ := json.Marshal(p.Cells)
 	w.Write(json)
 }
