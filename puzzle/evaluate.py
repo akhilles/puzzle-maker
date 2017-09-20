@@ -6,10 +6,14 @@ def gen_random(n=5):
     return np.array(puzzle)
 
 def evaluate(puzzle):
-    n = np.shape(puzzle)[1]
+    if(len(np.shape(puzzle)) == 2):
+        n = np.shape(puzzle)[1]
+    else:
+        n = int(np.sqrt(np.shape(puzzle)[0]))
+        puzzle = puzzle.reshape(n,n)
+
     visited = np.zeros(np.shape(puzzle), dtype=int)
     ans = np.zeros(np.shape(puzzle), dtype=int)
-    #is_valid = lambda x: (x[0]>=0 and x[0]<n) and (x[1]>=0 and x[1]<n)
 
     q = []
     moves = valid_moves((0,0), puzzle[0,0], n)
@@ -63,7 +67,7 @@ def valid_moves(position, step, n):
 
 
 if __name__=='__main__':
-    puz = gen_random(11)
+    puz = gen_random(501).flatten()
 
     m = np.mat('2 2 2 4 3; \
             2 2 3 3 3;\
@@ -75,6 +79,6 @@ if __name__=='__main__':
                 4 3 1 3 4;\
                 2 3 1 1 3;\
                 1 1 3 2 0')
-    puz = np.array(m)
+    #puz = np.array(m)
     print(puz)
     print(evaluate(puz))
