@@ -15,12 +15,15 @@
         </style>
         <script lang="JavaScript">
             window.onload = function(){
-                var n = 10;
+                var n = 7;
                 getRandomPuzzle(n, function(response) {
                     console.log(response);
                     var puzzle = JSON.parse(response);
-                    puzzle.push('G');
-                    createTable(n, puzzle);
+                    var cells = puzzle["Cells"];
+                    cells.push('G');
+                    var depthBFS = puzzle["DepthBFS"];
+                    createTable('puzzleTable', n, cells);
+                    createTable('depthTable', n, depthBFS);
                 });
             }
 
@@ -35,7 +38,7 @@
                 http.send(null);
             }
 
-            function createTable(n, items) {
+            function createTable(div, n, items) {
                 var table = document.createElement('table');
                 var row = null;
 
@@ -48,12 +51,13 @@
                     cell.innerHTML = item;
                 });
 
-                var div = document.getElementById('puzzleTable');
+                var div = document.getElementById(div);
                 div.appendChild(table);
             }
         </script>
     </head>
     <body>
         <div id="puzzleTable"></div>
+        <div id="depthTable" style="margin-top:40px"></div>
     </body>
 </html>
