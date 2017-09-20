@@ -3,6 +3,12 @@ package puzzle
 import "math/rand"
 import "fmt"
 
+type Puzzle struct {
+	cells, constraints, depthBFS []int
+	moves                        [][]int
+	fitness                      int
+}
+
 func validMoves(n int, cell int, val int) []int {
 	moves := make([]int, 0, 4)
 
@@ -50,7 +56,7 @@ func ConstraintMatrix(n int) []int {
 }
 
 // RandomPuzzle returns a random legal puzzle of size n along with its constraint matrix and valid moves table.
-func RandomPuzzle(n int) ([]int, []int, [][]int) {
+func RandomPuzzle(n int) *Puzzle {
 	cm := ConstraintMatrix(n)
 	rp := make([]int, len(cm))
 	vm := make([][]int, len(cm)+1)
@@ -60,11 +66,13 @@ func RandomPuzzle(n int) ([]int, []int, [][]int) {
 		vm[index] = validMoves(n, index, rp[index])
 	}
 
-	return rp, cm, vm
+	fitness, depthBFS := Evaluate(n, rp, vm)
+
+	return &Puzzle{rp, cm, depthBFS, vm, fitness}
 }
 
 // PrintPuzzle prints the puzzle in the command line.
-func PrintPuzzle(n int, puzzle []int) {
+func PrintPuzzle(p) {
 	for index, val := range puzzle {
 		fmt.Printf("%3d", val)
 		if (index+1)%n == 0 {

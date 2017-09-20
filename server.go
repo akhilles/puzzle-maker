@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -13,16 +14,19 @@ import (
 
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/random", randomPuzzle).Methods("GET")
+	router.HandleFunc("/random", random).Methods("GET")
 	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("assets/"))))
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
-func randomPuzzle(w http.ResponseWriter, r *http.Request) {
+func random(w http.ResponseWriter, r *http.Request) {
 	n, _ := strconv.Atoi(r.URL.Query().Get("n"))
 	rp, _, vm := puzzle.RandomPuzzle(n)
-	puzzle.BFS(n, rp, vm)
+	fitness, minDist := puzzle.Evaluate(n, rp, vm)
+	puzzle.PrintPuzzle(n, minDist)
+	fmt.Println(fitness)
+
 	json, _ := json.Marshal(rp)
 	w.Write(json)
 }
