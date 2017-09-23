@@ -1,41 +1,47 @@
 package puzzle
 
 import "math/rand"
-
-import "sort"
 import "fmt"
+import "sync"
 
-type byFitness []*Puzzle
-
-func (a byFitness) Len() int           { return len(a) }
-func (a byFitness) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a byFitness) Less(i, j int) bool { return a[i].Fitness < a[j].Fitness }
-
-func initPopulation(n int, size int, cm []int) []*Puzzle {
-	population := make([]*Puzzle, size)
+func initPopulation(n int, size int, cm []int) ([][]int, []int) {
+	population := make([][]int, size)
+	fitness := make([]int, size)
 	for i := range population {
-		population[i] = RandomPuzzle(n, cm)
+		p := RandomPuzzle(n, cm)
+		population[i] = p
+		fitness[i], _ = Evaluate(n, p, false)
 	}
-	sort.Sort(sort.Reverse(byFitness(population)))
-	return population
+	return population, fitness
 }
 
-func pickSurvivors(population []*Puzzle, elitism int, survRate float32) []*Puzzle {
-	survived := make([]*Puzzle, 0, int(float32(len(population))*survRate))
-	survived = append(survived, population[0:elitism]...)
-
-	sum := 0
-	for i := elitism; i < len(population); i++ {
-		sum += population[i].Fitness
+func pickSurvivors(population [][]int, populationFitness []int, elitism int, survRate float32) [][]int {
+	numSurvived := int(float32(len(population)) * survRate)
+	survived := make([][]int, numSurvived)
+	for i := 0; i < elitism; i++ {
+		maxValue := populationFitness[i]
+		for j := i + 1; j < len(population); j++ {
+			if populationFitness[j] > maxValue {
+				maxValue = populationFitness[j]
+				population[i], population[j] = population[j], population[i]
+				populationFitness[i], populationFitness[j] = populationFitness[j], populationFitness[i]
+			}
+		}
+		survived[i] = append([]int{}, population[i]...)
 	}
 
-	for i := elitism; i < cap(survived); i++ {
-		rand := rand.Intn(sum) + 1
+	sum := 0
+	for _, val := range populationFitness {
+		sum += val
+	}
+
+	for i := elitism; i < len(survived); i++ {
+		random := rand.Intn(sum) + 1
 		sumCount := 0
-		for j := elitism; j < len(population); j++ {
-			sumCount += population[j].Fitness
-			if rand <= sumCount {
-				survived = append(survived, population[j])
+		for j := 0; j < len(population); j++ {
+			sumCount += populationFitness[j]
+			if random <= sumCount {
+				survived[i] = append([]int{}, population[j]...)
 				break
 			}
 		}
@@ -43,81 +49,84 @@ func pickSurvivors(population []*Puzzle, elitism int, survRate float32) []*Puzzl
 	return survived
 }
 
-func crossover(disabled bool, parentA *Puzzle, parentB *Puzzle) (childA *Puzzle, childB *Puzzle) {
-	if !disabled {
-		crossPoint := int(0.25 * float32(len(parentA.Cells)) * (1 + 2*rand.Float32()))
-		childACells := make([]int, 0, len(parentA.Cells))
-		childACells = append(childACells, parentA.Cells[:crossPoint]...)
-		childACells = append(childACells, parentB.Cells[crossPoint:]...)
-		childBCells := make([]int, 0, len(parentA.Cells))
-		childBCells = append(childBCells, parentB.Cells[:crossPoint]...)
-		childBCells = append(childBCells, parentA.Cells[crossPoint:]...)
-
-		childA := Puzzle{
-			n:     parentA.n,
-			Cells: childACells,
+func crossover(parentA []int, parentB []int) ([]int, []int) {
+	crossPoint := int(float32(len(parentA)) * (0.25 + 0.5*rand.Float32()))
+	childA := make([]int, len(parentA))
+	childB := make([]int, len(parentA))
+	for i := range parentA {
+		if i < crossPoint {
+			childA[i] = parentA[i]
+			childB[i] = parentB[i]
+		} else {
+			childA[i] = parentB[i]
+			childB[i] = parentA[i]
 		}
-		childB := Puzzle{
-			n:     parentA.n,
-			Cells: childBCells,
-		}
-		return &childA, &childB
 	}
-	return parentA, parentB
+
+	return childA, childB
 }
 
-func (child *Puzzle) doMutate(cm []int) int {
-	mutIndex := rand.Intn(len(child.Cells))
-	oldVal := child.Cells[mutIndex]
-	for oldVal == child.Cells[mutIndex] {
-		child.Cells[mutIndex] = rand.Intn(cm[mutIndex]) + 1
-	}
-	child.Evaluate()
-	return child.Fitness
-}
-
-func (child *Puzzle) mutate(cm []int, mutRate float32) {
+func mutate(n int, child []int, cm []int, mutRate float32) int {
 	for rand.Float32() < mutRate {
-		mutIndex := rand.Intn(len(child.Cells))
-		oldVal := child.Cells[mutIndex]
-		for oldVal == child.Cells[mutIndex] {
-			child.Cells[mutIndex] = rand.Intn(cm[mutIndex]) + 1
+		mutIndex := rand.Intn(len(child))
+		newValue := child[mutIndex] + rand.Intn(cm[mutIndex]-1) + 1
+		if newValue > cm[mutIndex] {
+			newValue -= cm[mutIndex]
 		}
-		child.Evaluate()
+		child[mutIndex] = newValue
+
 		mutRate /= 3
 	}
+
+	fitness, _ := Evaluate(n, child, false)
+	return fitness
 }
 
-// goodMut, relevantMut
-func GeneticPuzzle(n int, sizePop int, gens int, elitism int, survRate float32, mutRate float32) *Puzzle {
+func GeneticPuzzle(n int, sizePop int, gens int, elitism int, survRate float32, mutRate float32) []int {
 	cm := ConstraintMatrix(n)
-	population := initPopulation(n, sizePop, cm)
+	population, populationFitness := initPopulation(n, sizePop, cm)
 
 	genFitness := make([]int, gens)
 	bestPuzzle := population[0]
+	bestFitness := populationFitness[0]
 
 	for i := 0; i < gens; i++ {
-		survivors := pickSurvivors(population, elitism, survRate)
-		for j := elitism; j < len(population); j += 2 {
-			parentAIndex := rand.Intn(len(survivors))
-			parentBIndex := parentAIndex
-			for parentAIndex == parentBIndex {
-				parentBIndex = rand.Intn(len(survivors))
-			}
-			childA, childB := crossover(false, survivors[parentAIndex], survivors[parentBIndex])
-			childA.mutate(cm, mutRate)
-			childB.mutate(cm, mutRate)
-			population[j] = childA
-			population[j+1] = childB
+		survivors := pickSurvivors(population, populationFitness, elitism, survRate)
+
+		genFitness[i] = populationFitness[0] - n*n
+		if populationFitness[0] > bestFitness {
+			bestPuzzle = population[0]
+			bestFitness = populationFitness[0]
 		}
 
-		sort.Sort(sort.Reverse(byFitness(population)))
-		genFitness[i] = population[0].Fitness - n*n
-		if population[0].Fitness > bestPuzzle.Fitness {
-			bestPuzzle = population[0]
+		var wg sync.WaitGroup
+
+		for j := elitism; j < len(population); j += 2 {
+			index := j
+			wg.Add(1)
+			go func() {
+				numSurvived := len(survivors)
+				parentAIndex := rand.Intn(numSurvived)
+				parentBIndex := parentAIndex + rand.Intn(numSurvived-1) + 1
+				if parentBIndex >= numSurvived {
+					parentBIndex -= numSurvived
+				}
+				childA, childB := crossover(survivors[parentAIndex], survivors[parentBIndex])
+				populationFitness[index] = mutate(n, childA, cm, mutRate)
+				populationFitness[index+1] = mutate(n, childB, cm, mutRate)
+				population[index] = childA
+				population[index+1] = childB
+				defer wg.Done()
+			}()
 		}
+		wg.Wait()
 	}
 
-	fmt.Println(bestPuzzle)
+	fit, dbfs := Evaluate(n, bestPuzzle, true)
+	PrintTable(n, bestPuzzle)
+	fmt.Println()
+	PrintTable(n, dbfs)
+	fmt.Println(fit - n*n)
+
 	return bestPuzzle
 }

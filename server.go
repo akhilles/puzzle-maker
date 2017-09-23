@@ -11,6 +11,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type toGo struct {
+	Cells    []int
+	DepthBFS []int
+	fitness  int
+}
+
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/random", random).Methods("GET")
@@ -21,9 +27,9 @@ func main() {
 
 func random(w http.ResponseWriter, r *http.Request) {
 	n, _ := strconv.Atoi(r.URL.Query().Get("n"))
+	p := puzzle.GeneticPuzzle(n, 500, 40000, 20, 0.25, 4)
+	fitness, dbfs := puzzle.Evaluate(n, p, true)
 
-	p := puzzle.GeneticPuzzle(n, 200, 5000, 6, 0.20, 0.7)
-
-	json, _ := json.Marshal(p)
+	json, _ := json.Marshal(toGo{p, dbfs, fitness})
 	w.Write(json)
 }
