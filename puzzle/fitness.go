@@ -1,7 +1,12 @@
 package puzzle
 
+func Solution(n int, cells []int) {
+	//fitness, dbfs := Evaluate(n, cells)
+
+}
+
 // Evaluate returns the fitness score of a puzzle.
-func Evaluate(n int, cells []int, complete bool) (int, []int) {
+func Evaluate(n int, cells []int) (int, []int) {
 	depthBFS := make([]int, n*n)
 	goal := n*n - 1
 	q := make([]int, 1, n*n)
@@ -12,9 +17,6 @@ func Evaluate(n int, cells []int, complete bool) (int, []int) {
 		q = q[1:]
 		if loc != len(cells) {
 			for _, move := range ValidMoves(n, loc, cells[loc]) {
-				if !complete && move == goal {
-					return depth + n*n, depthBFS
-				}
 				if move != 0 && (depthBFS[move] > depth || depthBFS[move] == 0) {
 					depthBFS[move] = depth
 					q = append(q, move)
@@ -31,7 +33,7 @@ func Evaluate(n int, cells []int, complete bool) (int, []int) {
 			accum = 0
 		}
 	}
-	if complete && depthBFS[goal] != 0 {
+	if depthBFS[goal] != 0 {
 		return depthBFS[goal] + n*n, depthBFS
 	}
 	return visited, depthBFS

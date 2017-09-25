@@ -14,27 +14,33 @@
             }
         </style>
         <script lang="JavaScript">
-            window.onload = function(){
-                var n = 20;
-                getRandomPuzzle(n, function(response) {
-                    console.log(response);
-                    var puzzle = JSON.parse(response);
-                    var cells = puzzle["Cells"];
-                    cells.push('G');
-                    var depthBFS = puzzle["DepthBFS"];
-                    createTable('puzzleTable', n, cells);
-                    createTable('depthTable', n, depthBFS);
-                });
+
+            function getN() {
+                var sel = document.getElementById("n");
+                return sel.options[sel.selectedIndex].value;
             }
 
-            function getRandomPuzzle(n, callback) {
+            function displayPuzzle(n, response) {
+                console.log(response);
+                var puzzle = JSON.parse(response);
+                var cells = puzzle["Cells"];
+                cells.push('G');
+                var depthBFS = puzzle["DepthBFS"];
+                createTable('puzzleTable', n, cells);
+                createTable('depthTable', n, depthBFS);
+                setIterations(puzzle['Iterations']);
+                setSolution(puzzle['Fitness']);
+            }
+
+            function getGenAlgoPuzzle() {
+                n = getN();
                 var http = new XMLHttpRequest();
                 http.onreadystatechange = function() {
                     if (http.readyState == 4 && http.status == 200) {
-                        callback(http.responseText);
+                        displayPuzzle(n, http.responseText);
                     }
                 }
-                http.open("GET", '/random?n=' + n, true);
+                http.open("GET", '/genalgo?n=' + n, true);
                 http.send(null);
             }
 
@@ -52,12 +58,34 @@
                 });
 
                 var div = document.getElementById(div);
+                div.innerHTML = '';
                 div.appendChild(table);
+            }
+
+            function setIterations(numIter) {
+                var div = document.getElementById('iterations');
+                div.innerHTML = 'iterations: ' + numIter;
+            }
+
+            function setSolution(solution) {
+                var div = document.getElementById('solution');
+                div.innerHTML = 'solution: ' + solution;
             }
         </script>
     </head>
     <body>
-        <div id="puzzleTable"></div>
+        <select name="n" id="n">
+            <option selected value="5">5</option>
+            <option value="7">7</option>
+            <option value="9">9</option>
+            <option value="11">11</option>
+            <option value="20">20</option>
+        </select>
+        <button onclick="getGenAlgoPuzzle()">GEN ALGO</button>
+        <button>HILL CLIMBING</button>
+        <div id="iterations" style="margin-top:40px"></div>
+        <div id="solution"></div>
+        <div id="puzzleTable" style="margin-top:40px"></div>
         <div id="depthTable" style="margin-top:40px"></div>
     </body>
 </html>

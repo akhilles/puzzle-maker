@@ -10,7 +10,7 @@ func initPopulation(n int, size int, cm []int) ([][]int, []int) {
 	for i := range population {
 		p := RandomPuzzle(n, cm)
 		population[i] = p
-		fitness[i], _ = Evaluate(n, p, false)
+		fitness[i], _ = Evaluate(n, p)
 	}
 	return population, fitness
 }
@@ -78,11 +78,13 @@ func mutate(n int, child []int, cm []int, mutRate float32) int {
 		mutRate /= 3
 	}
 
-	fitness, _ := Evaluate(n, child, false)
+	fitness, _ := Evaluate(n, child)
 	return fitness
 }
 
-func GeneticPuzzle(n int, sizePop int, gens int, elitism int, survRate float32, mutRate float32) []int {
+func GeneticPuzzle(n int, gens int, elitism int, survRate float32, mutRate float32) ([]int, []int, int) {
+	sizePop := n * n * 2
+	mutRate *= float32(n * n)
 	cm := ConstraintMatrix(n)
 	population, populationFitness := initPopulation(n, sizePop, cm)
 
@@ -122,11 +124,11 @@ func GeneticPuzzle(n int, sizePop int, gens int, elitism int, survRate float32, 
 		wg.Wait()
 	}
 
-	fit, dbfs := Evaluate(n, bestPuzzle, true)
+	fit, dbfs := Evaluate(n, bestPuzzle)
 	PrintTable(n, bestPuzzle)
 	fmt.Println()
 	PrintTable(n, dbfs)
 	fmt.Println(fit - n*n)
 
-	return bestPuzzle
+	return bestPuzzle, dbfs, fit
 }
