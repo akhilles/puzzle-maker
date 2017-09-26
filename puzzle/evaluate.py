@@ -1,17 +1,37 @@
 import numpy as np
 from flask import Flask
 
+
 def gen_random(n=5):
     puzzle = [[np.random.randint(1,max(n-(r), r-1, n-(c), c-1)+1) for r in range(1,n+1)] for c in range(1,n+1)]
     puzzle[n-1][n-1] = 0
     return np.array(puzzle)
 
-def evaluate(puzzle):
+def readFromText():
+    pass
+
+def solutionChain(sol):
+    n = np.shape(sol)[0]
+    print(n)
+    curr = [n-1,n-1]
+    chain = []
+
+    while(curr != [0,0]):
+        chain.insert(0,curr)
+        curr = list(sol[curr[0],curr[1]])
+    return chain
+
+
+def evaluate(puzzle, getSol = False):
+    n = 0
+
     if(len(np.shape(puzzle)) == 2):
         n = np.shape(puzzle)[1]
     else:
         n = int(np.sqrt(np.shape(puzzle)[0]))
         puzzle = puzzle.reshape(n,n)
+
+    sol = np.zeros((n,n,2), dtype=int)
 
     visited = np.zeros(np.shape(puzzle), dtype=int)
     ans = np.zeros(np.shape(puzzle), dtype=int)
@@ -39,6 +59,7 @@ def evaluate(puzzle):
 
         for i in moves:
             if(visited[i] == 0):
+                sol[i] = loc
                 q.append(i)
                 visited[i] = 1
                 accum+=1
@@ -47,6 +68,8 @@ def evaluate(puzzle):
     if(quality == 0):
         quality = -(np.sum(ans==0)-1)
     ans[0,0] = 0
+    if(getSol):
+        return sol
     return ans, quality
 
 
@@ -80,6 +103,9 @@ if __name__=='__main__':
                 4 3 1 3 4;\
                 2 3 1 1 3;\
                 1 1 3 2 0')
-    #puz = np.array(m)
+    puz = np.array(m)
     print(puz)
-    print(evaluate(puz))
+    solution = evaluate(puz,getSol=True)
+    print(solution)
+    chain = solutionChain(solution)
+    print(chain)
