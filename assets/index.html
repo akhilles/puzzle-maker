@@ -26,6 +26,12 @@
                 var cells = puzzle["Cells"];
                 cells.push('G');
                 var depthBFS = puzzle["DepthBFS"];
+                for (j = 1; j < depthBFS.length; j++) {
+                    if (depthBFS[j] == 0) {
+                        console.log('WTF')
+                        depthBFS[j] = "X"
+                    }
+                }
                 createTable('puzzleTable', n, cells);
                 createTable('depthTable', n, depthBFS);
                 setIterations(puzzle['Iterations']);

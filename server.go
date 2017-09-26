@@ -23,20 +23,21 @@ func main() {
 	router.HandleFunc("/genalgo", random).Methods("GET")
 	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("assets/"))))
 
+	//puzzle.GetPlot(11, 4000, 0.3, 0.018, 50)
+
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
 func random(w http.ResponseWriter, r *http.Request) {
 	// parameters
 	// init pop = n * n * 2
-	gens := 20000
-	elitism := 8
+	gens := 4000
 	var selRate, mutRate float32
-	selRate = 0.25
+	selRate = 0.3
 	mutRate = 0.018
 
 	n, _ := strconv.Atoi(r.URL.Query().Get("n"))
-	p, dbfs, fitness := puzzle.GeneticPuzzle(n, gens, elitism, selRate, mutRate)
+	p, dbfs, fitness, _ := puzzle.GeneticPuzzle(n, gens, selRate, mutRate)
 
 	json, _ := json.Marshal(toGo{p, dbfs, fitness - n*n, gens})
 	w.Write(json)

@@ -1,8 +1,20 @@
 package puzzle
 
-import "math/rand"
-import "fmt"
-import "sync"
+import (
+	"fmt"
+	"math/rand"
+	"strconv"
+	"sync"
+
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/vg"
+)
+
+//"github.com/gonum/plot"
+//"github.com/gonum/plot/plotter"
+//"github.com/gonum/plot/plotutil"
+//"github.com/gonum/plot/vg"
 
 func initPopulation(n int, size int, cm []int) ([][]int, []int) {
 	population := make([][]int, size)
@@ -82,23 +94,63 @@ func mutate(n int, child []int, cm []int, mutRate float32) int {
 	return fitness
 }
 
-func GeneticPuzzle(n int, gens int, elitism int, survRate float32, mutRate float32) ([]int, []int, int) {
+func GetPlot(n int, gens int, survRate float32, mutRate float32, count int) {
+	lines := make([][]int, count)
+	for i := range lines {
+		_, _, _, line := GeneticPuzzle(n, gens, survRate, mutRate)
+		lines[i] = line
+	}
+
+	p, _ := plot.New()
+	p.Title.Text = "Genetic Algorithm, N = " + strconv.Itoa(n)
+	p.X.Label.Text = "generation"
+	p.Y.Label.Text = "fitness"
+	p.X.Min = 0
+	p.X.Max = float64(gens)
+	p.Y.Min = 0
+	p.Y.Max = float64(n*n - 1)
+	p.Add(plotter.NewGrid())
+	pts := make(plotter.XYs, len(lines[0]))
+
+	for i := range pts {
+		pts[i].X = float64(i * 10)
+		sum := 0
+		for _, line := range lines {
+			sum += line[i]
+		}
+		pts[i].Y = float64(sum) / float64(count)
+	}
+
+	l, _ := plotter.NewLine(pts)
+	p.Add(l)
+	p.Save(6*vg.Inch, 6*vg.Inch, "genalgo"+strconv.Itoa(n)+".png")
+}
+
+func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, []int, int, []int) {
 	sizePop := n * n * 2
 	mutRate *= float32(n * n)
+	elitism := int(float32(sizePop) * survRate * 0.2)
+	if elitism%2 == 1 {
+		elitism++
+	}
+
 	cm := ConstraintMatrix(n)
 	population, populationFitness := initPopulation(n, sizePop, cm)
 
-	genFitness := make([]int, gens)
 	bestPuzzle := population[0]
 	bestFitness := populationFitness[0]
+	genFitness := make([]int, 0, gens/10)
 
 	for i := 0; i < gens; i++ {
 		survivors := pickSurvivors(population, populationFitness, elitism, survRate)
 
-		genFitness[i] = populationFitness[0] - n*n
 		if populationFitness[0] > bestFitness {
 			bestPuzzle = population[0]
 			bestFitness = populationFitness[0]
+		}
+
+		if i%10 == 0 {
+			genFitness = append(genFitness, bestFitness-n*n)
 		}
 
 		var wg sync.WaitGroup
@@ -130,5 +182,5 @@ func GeneticPuzzle(n int, gens int, elitism int, survRate float32, mutRate float
 	PrintTable(n, dbfs)
 	fmt.Println(fit - n*n)
 
-	return bestPuzzle, dbfs, fit
+	return bestPuzzle, dbfs, fit, genFitness
 }
