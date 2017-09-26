@@ -14,21 +14,19 @@
             }
         </style>
         <script lang="JavaScript">
-
+            bestFitness = -1
             function getN() {
                 var sel = document.getElementById("n");
                 return sel.options[sel.selectedIndex].value;
             }
 
-            function displayPuzzle(n, response) {
-                console.log(response);
-                var puzzle = JSON.parse(response);
+            function displayPuzzle(n, puzzle) {
+                console.log(puzzle);
                 var cells = puzzle["Cells"];
                 cells.push('G');
                 var depthBFS = puzzle["DepthBFS"];
                 for (j = 1; j < depthBFS.length; j++) {
                     if (depthBFS[j] == 0) {
-                        console.log('WTF')
                         depthBFS[j] = "X"
                     }
                 }
@@ -43,7 +41,12 @@
                 var http = new XMLHttpRequest();
                 http.onreadystatechange = function() {
                     if (http.readyState == 4 && http.status == 200) {
-                        displayPuzzle(n, http.responseText);
+                        var response = JSON.parse(http.responseText);
+                        if (response['Fitness'] > bestFitness) {
+                            bestFitness = response['Fitness']
+                            displayPuzzle(n, response);
+                        }
+                        getGenAlgoPuzzle()
                     }
                 }
                 http.open("GET", '/genalgo?n=' + n, true);
