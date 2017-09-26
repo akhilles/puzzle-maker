@@ -1,4 +1,5 @@
 import numpy as np
+from flask import Flask
 
 def gen_random(n=5):
     puzzle = [[np.random.randint(1,max(n-(r), r-1, n-(c), c-1)+1) for r in range(1,n+1)] for c in range(1,n+1)]
