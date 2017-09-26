@@ -50,6 +50,18 @@
                 http.send(null);
             }
 
+            function getstuff() {
+                n = getN();
+                var http = new XMLHttpRequest();
+                http.onreadystatechange = function() {
+                    if (http.readyState == 4 && http.status == 200) {
+                        displayPuzzle(n, http.responseText);
+                    }
+                }
+                http.open("GET", 'localhost:5000/climb', true);
+                http.send(null);
+            }
+
             function createTable(div, n, items) {
                 var table = document.createElement('table');
                 var row = null;
@@ -88,7 +100,7 @@
             <option value="20">20</option>
         </select>
         <button onclick="getGenAlgoPuzzle()">GEN ALGO</button>
-        <button>HILL CLIMBING</button>
+        <button onclick="getstuff()">HILL CLIMBING</button>
         <div id="iterations" style="margin-top:40px"></div>
         <div id="solution"></div>
         <div id="puzzleTable" style="margin-top:40px"></div>
