@@ -23,7 +23,7 @@ func main() {
 	router.HandleFunc("/genalgo", random).Methods("GET")
 	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("assets/"))))
 
-	//puzzle.GetPlot(11, 4000, 0.3, 0.018, 50)
+	//puzzle.GetPlot(5, 10000, 0.3, 0.018, 10)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
@@ -31,7 +31,7 @@ func main() {
 func random(w http.ResponseWriter, r *http.Request) {
 	// parameters
 	// init pop = n * n * 2
-	gens := 4000
+	gens := 20000
 	var selRate, mutRate float32
 	selRate = 0.3
 	mutRate = 0.018

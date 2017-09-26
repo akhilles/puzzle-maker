@@ -187,7 +187,8 @@ func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, [
 	fit, dbfs := Evaluate(n, bestPuzzle)
 
 	elapsed := time.Since(start)
-	fmt.Printf("Algorithm took %s\n", elapsed)
+	fmt.Printf("Fitness:  %d, ", bestFitness-n*n)
+	fmt.Printf("Duration: %s\n", elapsed)
 
 	return bestPuzzle, dbfs, fit, genFitness
 }
