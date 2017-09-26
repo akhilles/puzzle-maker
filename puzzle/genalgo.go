@@ -5,16 +5,12 @@ import (
 	"math/rand"
 	"strconv"
 	"sync"
+	"time"
 
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
 )
-
-//"github.com/gonum/plot"
-//"github.com/gonum/plot/plotter"
-//"github.com/gonum/plot/plotutil"
-//"github.com/gonum/plot/vg"
 
 func initPopulation(n int, size int, cm []int) ([][]int, []int) {
 	population := make([][]int, size)
@@ -47,17 +43,27 @@ func pickSurvivors(population [][]int, populationFitness []int, elitism int, sur
 		sum += val
 	}
 
+	var wg sync.WaitGroup
+
 	for i := elitism; i < len(survived); i++ {
-		random := rand.Intn(sum) + 1
-		sumCount := 0
-		for j := 0; j < len(population); j++ {
-			sumCount += populationFitness[j]
-			if random <= sumCount {
-				survived[i] = append([]int{}, population[j]...)
-				break
+		indf := i
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			random := rand.Intn(sum) + 1
+			sumCount := 0
+			for j := 0; j < len(population); j++ {
+				sumCount += populationFitness[j]
+				if random <= sumCount {
+					survived[indf] = append([]int{}, population[j]...)
+					break
+				}
 			}
-		}
+		}()
 	}
+
+	wg.Wait()
+
 	return survived
 }
 
@@ -127,6 +133,8 @@ func GetPlot(n int, gens int, survRate float32, mutRate float32, count int) {
 }
 
 func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, []int, int, []int) {
+	start := time.Now()
+
 	sizePop := n * n * 2
 	mutRate *= float32(n * n)
 	elitism := int(float32(sizePop) * survRate * 0.2)
@@ -159,6 +167,7 @@ func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, [
 			index := j
 			wg.Add(1)
 			go func() {
+				defer wg.Done()
 				numSurvived := len(survivors)
 				parentAIndex := rand.Intn(numSurvived)
 				parentBIndex := parentAIndex + rand.Intn(numSurvived-1) + 1
@@ -170,17 +179,15 @@ func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, [
 				populationFitness[index+1] = mutate(n, childB, cm, mutRate)
 				population[index] = childA
 				population[index+1] = childB
-				defer wg.Done()
 			}()
 		}
 		wg.Wait()
 	}
 
 	fit, dbfs := Evaluate(n, bestPuzzle)
-	PrintTable(n, bestPuzzle)
-	fmt.Println()
-	PrintTable(n, dbfs)
-	fmt.Println(fit - n*n)
+
+	elapsed := time.Since(start)
+	fmt.Printf("Algorithm took %s\n", elapsed)
 
 	return bestPuzzle, dbfs, fit, genFitness
 }

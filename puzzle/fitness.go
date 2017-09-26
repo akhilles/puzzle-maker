@@ -1,10 +1,5 @@
 package puzzle
 
-func Solution(n int, cells []int) {
-	//fitness, dbfs := Evaluate(n, cells)
-
-}
-
 // Evaluate returns the fitness score of a puzzle.
 func Evaluate(n int, cells []int) (int, []int) {
 	depthBFS := make([]int, n*n)
