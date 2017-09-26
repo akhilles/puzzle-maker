@@ -43,17 +43,27 @@ func pickSurvivors(population [][]int, populationFitness []int, elitism int, sur
 		sum += val
 	}
 
+	var wg sync.WaitGroup
+
 	for i := elitism; i < len(survived); i++ {
-		random := rand.Intn(sum) + 1
-		sumCount := 0
-		for j := 0; j < len(population); j++ {
-			sumCount += populationFitness[j]
-			if random <= sumCount {
-				survived[i] = append([]int{}, population[j]...)
-				break
+		indf := i
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			random := rand.Intn(sum) + 1
+			sumCount := 0
+			for j := 0; j < len(population); j++ {
+				sumCount += populationFitness[j]
+				if random <= sumCount {
+					survived[indf] = append([]int{}, population[j]...)
+					break
+				}
 			}
-		}
+		}()
 	}
+
+	wg.Wait()
+
 	return survived
 }
 
