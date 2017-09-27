@@ -10,7 +10,26 @@ The GUI for vizualizing the puzzles was written in HTML and JavaScript. The algo
 
 \newpage
 ## Task 2
+We implemented the breadth first search to evaluate puzzle fitness. The algorithm keeps track of
+a 'visited' matrix to ensure paths are not repeated. Another matrix is used to keep track of the
+previous location for each point in the puzzle. The path can be obtained by backtracking through this
+matrix.
 
+Examples of different evaluations.
+
+![5X5 bad](bad5.png){#id .class width=576 height=576}
+
+![7X7 bad](bad7.png){#id .class width=576 height=576}
+
+![9X9 bad](bad9.png){#id .class width=576 height=576}
+
+![11X11 bad](bad11.png){#id .class width=576 height=576}
+
+![5X5 good](good5.png){#id .class width=576 height=576}
+
+![7X7 good](good7.png){#id .class width=576 height=576}
+
+![9X9 good](good9.png){#id .class width=576 height=576}
 \newpage
 ## Task 3
 The basic hill climbing approach was run for one thousand iterations for each puzzle size to 
