@@ -14,7 +14,7 @@
             }
         </style>
         <script lang="JavaScript">
-            bestFitness = -1
+
             function getN() {
                 var sel = document.getElementById("n");
                 return sel.options[sel.selectedIndex].value;
@@ -42,11 +42,7 @@
                 http.onreadystatechange = function() {
                     if (http.readyState == 4 && http.status == 200) {
                         var response = JSON.parse(http.responseText);
-                        if (response['Fitness'] > bestFitness) {
-                            bestFitness = response['Fitness']
-                            displayPuzzle(n, response);
-                        }
-                        getGenAlgoPuzzle()
+                        displayPuzzle(n, response);
                     }
                 }
                 http.open("GET", '/genalgo?n=' + n, true);
@@ -59,10 +55,7 @@
                 http.onreadystatechange = function() {
                     if (http.readyState == 4 && http.status == 200) {
                         var response = JSON.parse(http.responseText);
-                        if (response['Fitness'] > bestFitness) {
-                            bestFitness = response['Fitness']
-                            displayPuzzle(n, response);
-                        }
+                        displayPuzzle(n, response);
                     }
                 }
                 http.open("GET", 'http://172.31.115.33:5000/climb?n=' + n, true);
@@ -105,6 +98,7 @@
             <option value="9">9</option>
             <option value="11">11</option>
             <option value="20">20</option>
+            <option value="30">30</option>
             <option value="40">40</option>
         </select>
         <button onclick="getGenAlgoPuzzle()">GEN ALGO</button>
