@@ -95,7 +95,7 @@ func mutate(n int, child []int, cm []int, mutRate float32) int {
 	return fitness
 }
 
-func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, []int, int) {
+func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, []int, int, []string) {
 	start := time.Now()
 
 	sizePop := n * n * 2
@@ -148,5 +148,5 @@ func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, [
 	fmt.Printf("Fitness:  %d, ", bestFitness-n*n)
 	fmt.Printf("Duration: %s\n", elapsed)
 
-	return bestPuzzle, dbfs, fit
+	return bestPuzzle, dbfs, fit, Solution(n, dbfs)
 }

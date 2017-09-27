@@ -33,3 +33,53 @@ func Evaluate(n int, cells []int) (int, []int) {
 	}
 	return visited, depthBFS
 }
+
+func findParent(n int, depthBFS []int, index int) (int, string) {
+	value := depthBFS[index]
+
+	r := index / n
+	c := index % n
+
+	for j := c - 1; j >= 0; j-- {
+		newIndex := r*n + j
+		if depthBFS[newIndex] == value-1 {
+			return newIndex, "R"
+		}
+	}
+
+	for j := c + 1; j < n; j++ {
+		newIndex := r*n + j
+		if depthBFS[newIndex] == value-1 {
+			return newIndex, "L"
+		}
+	}
+
+	for j := r + 1; j < n; j++ {
+		newIndex := j*n + c
+		if depthBFS[newIndex] == value-1 {
+			return newIndex, "U"
+		}
+	}
+
+	for j := r - 1; j >= 0; j-- {
+		newIndex := j*n + c
+		if depthBFS[newIndex] == value-1 {
+			return newIndex, "D"
+		}
+	}
+
+	return 0, "WTF"
+}
+
+func Solution(n int, depthBFS []int) []string {
+	index := len(depthBFS) - 1
+	value := depthBFS[index]
+	moves := make([]string, depthBFS[index])
+
+	for i := len(moves) - 1; i >= 0; i-- {
+		index, moves[i] = findParent(n, depthBFS, index)
+		value--
+	}
+
+	return moves
+}

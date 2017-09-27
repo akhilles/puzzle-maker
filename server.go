@@ -16,6 +16,7 @@ type toGo struct {
 	DepthBFS   []int
 	Fitness    int
 	Iterations int
+	Solution   []string
 }
 
 func main() {
@@ -37,8 +38,8 @@ func random(w http.ResponseWriter, r *http.Request) {
 	mutRate = 0.018
 
 	n, _ := strconv.Atoi(r.URL.Query().Get("n"))
-	p, dbfs, fitness := puzzle.GeneticPuzzle(n, gens, selRate, mutRate)
+	p, dbfs, fitness, solution := puzzle.GeneticPuzzle(n, gens, selRate, mutRate)
 
-	json, _ := json.Marshal(toGo{p, dbfs, fitness - n*n, gens})
+	json, _ := json.Marshal(toGo{p, dbfs, fitness - n*n, gens, solution})
 	w.Write(json)
 }
