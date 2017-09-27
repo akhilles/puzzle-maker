@@ -24,11 +24,11 @@ Examples of different evaluations.
 
 ![11X11 bad](bad11.png)
 
-![5X5 good](good5.png)
+![5X5 good](good5.PNG)
 
-![7X7 good](good7.png)
+![7X7 good](good7.PNG)
 
-![9X9 good](good9.png)
+![9X9 good](good9.PNG)
 
 \newpage
 ## Task 3
