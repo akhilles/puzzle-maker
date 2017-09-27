@@ -3,29 +3,32 @@
 CS 440 - Assignment 1  
 Group: Akhil Velagapudi, Nithin Tammishetti
 
+\newpage
 ## Task 1
 
 The GUI for vizualizing the puzzles was written in HTML and JavaScript. The algorithms that are responsible for actually generating the puzzles are written in Go and Python. The HTML front-end communicates with the back-end through REST calls.
 
+\newpage
 ## Task 2
 
-
+\newpage
 ## Task 3
 The basic hill climbing approach was run for one thousand iterations for each puzzle size to 
 generate these graphs. The algorithm was averaged over fifty iterations for each puzzle size.
 A graph with the algorithm running for ten thousand iterations is also included. The search with 1000 iterations
 was able to yield an evaluation of 88.
 
-![Basic hill climbing for 5x5 puzzle](plots/5by5basic.png){#id .class width=576 height=576}
+![Basic hill climbing for 5x5 puzzle](plots/5by5basic.png)
 
-![Basic hill climbing for 7x7 puzzle](plots/7by7basic.png){#id .class width=576 height=576}
+![Basic hill climbing for 7x7 puzzle](plots/7by7basic.png)
 
-![Basic hill climbing for 9x9 puzzle](plots/9by9basic.png){#id .class width=576 height=576}
+![Basic hill climbing for 9x9 puzzle](plots/9by9basic.png)
 
-![Basic hill climbing for 11x11 puzzle](plots/11by11basic.png){#id .class width=576 height=576}
+![Basic hill climbing for 11x11 puzzle](plots/11by11basic.png)
 
-![Basic hill climbing for 11x11 puzzle deep](plots/11by11deep.png){#id .class width=576 height=576}
+![Basic hill climbing for 11x11 puzzle deep](plots/11by11deep.png)
 
+\newpage
 ## Task 4
 The hill climbing approach with random restarts was run for one thousand iterations for each puzzle size to 
 generate these graphs. The algorithm was averaged over fifty iterations for each puzzle size.
@@ -38,39 +41,40 @@ with 500 iterations each. The deeper graph was run with 4 restarts with 2500 ite
 was able to reach an evaluation of 87. But for very large numbers of iterations, restarts would win over basic hill climbing
 since the algorithm simply runs hill climbing many times so it is bound to go past local optima eventually.
 
-![Hill climbing with restarts for 5x5 puzzle](plots/5by5restarts.png){#id .class width=576 height=576}
+![Hill climbing with restarts for 5x5 puzzle](plots/5by5restarts.png)
 
-![Hill climbing with restarts for 7x7 puzzle](plots/7by7restarts.png){#id .class width=576 height=576}
+![Hill climbing with restarts for 7x7 puzzle](plots/7by7restarts.png)
 
-![Hill climbing with restarts for 9x9 puzzle](plots/9by9restarts.png){#id .class width=576 height=576}
+![Hill climbing with restarts for 9x9 puzzle](plots/9by9restarts.png)
 
-![Hill climbing with restarts for 11x11 puzzle](plots/11by11restarts.png){#id .class width=576 height=576}
+![Hill climbing with restarts for 11x11 puzzle](plots/11by11restarts.png)
 
-![Hill climbing with restarts for 11x11 puzzle deep](plots/11by11restartsdeep.png){#id .class width=576 height=576}
+![Hill climbing with restarts for 11x11 puzzle deep](plots/11by11restartsdeep.png)
 
+\newpage
 ## Task 5
 The hill climbing approach with random walk probability was evaluated for each puzzle size. The parameter p was
 chosen by first trying out a wide range of p values and observing the performance of the algorithm. Then a small range
 of p values was examined for fine tuning the parameter choice. The final value we chose was p = 0.0025.
 
-![Trying out different p values for random walk](plots/pgraph.png){#id .class width=576 height=576}
+![Trying out different p values for random walk](plots/pgraph.png)
 
 The algorithm was also run for 10000 iterations to compare its performance with the other approaches. This deeper search
 was only able to reach an evaluation of 65. This is because the algorithm potential makes hugely detrimental leaps due
 to its completely random nature. As can be seen from the graph, the algorithm struggles with making consistent progress
 due to the huge dips in fitness caused by random chance.
 
-![Hill climbing with random walk for 5x5 puzzle](plots/5by5rwalk.png){#id .class width=576 height=576}
+![Hill climbing with random walk for 5x5 puzzle](plots/5by5rwalk.png)
 
-![Hill climbing with random walk for 7x7 puzzle](plots/7by7rwalk.png){#id .class width=576 height=576}
+![Hill climbing with random walk for 7x7 puzzle](plots/7by7rwalk.png)
 
-![Hill climbing with random walk for 9x9 puzzle](plots/9by9rwalk.png){#id .class width=576 height=576}
+![Hill climbing with random walk for 9x9 puzzle](plots/9by9rwalk.png)
 
-![Hill climbing with random walk for 11x11 puzzle](plots/11by11rwalk.png){#id .class width=576 height=576}
+![Hill climbing with random walk for 11x11 puzzle](plots/11by11rwalk.png)
 
-![Hill climbing with random walk for 11x11 puzzle deep](plots/11by11rwalkdeep.png){#id .class width=576 height=576}
+![Hill climbing with random walk for 11x11 puzzle deep](plots/11by11rwalkdeep.png)
 
-
+\newpage
 ## Task 6
 The last hill climbing approach involved simulated annealing, where the algorithm starts off with a high initial temperature
 which leans more toward random walk. As the iteration number increases, the temperature is lowered and the algorithm
@@ -90,16 +94,17 @@ The temperature choice was chosen by running the algorithm with variable tempera
 calue we chose was 80 since its average fitness was 90.5, the highest of numbers we iterated over(30,40,50,80,120,200).
 
 
-![Hill climbing with simulated annealing for 5x5 puzzle](plots/5by5anneal.png){#id .class width=576 height=576}
+![Hill climbing with simulated annealing for 5x5 puzzle](plots/5by5anneal.png)
 
-![Hill climbing with simulated annealing for 7x7 puzzle](plots/7by7anneal.png){#id .class width=576 height=576}
+![Hill climbing with simulated annealing for 7x7 puzzle](plots/7by7anneal.png)
 
-![Hill climbing with simulated annealing for 9x9 puzzle](plots/9by9anneal.png){#id .class width=576 height=576}
+![Hill climbing with simulated annealing for 9x9 puzzle](plots/9by9anneal.png)
 
-![Hill climbing with simulated annealing for 11x11 puzzle](plots/11by11anneal.png){#id .class width=576 height=576}
+![Hill climbing with simulated annealing for 11x11 puzzle](plots/11by11anneal.png)
 
-![Hill climbing with simulated annealing for 11x11 puzzle deep](plots/11by11annealdeep.png){#id .class width=576 height=576}
+![Hill climbing with simulated annealing for 11x11 puzzle deep](plots/11by11annealdeep.png)
 
+\newpage
 ## Task 7
 
 We implemented a genetic algorithm for our population-based approach. Each puzzle is represented as a chromosome by concatenating the values in each cell left to right and top to bottom. To make this simpler, the internal implementation used for the puzzle matrix was a flat array.
@@ -143,20 +148,54 @@ In order to allow for multiple mutations, mutations will continue to occur as lo
 
 ### Puzzle
 
-See Figure 1.
+*See Figure 1*
 
-![Puzzle with fitness of 68 generated by genetic algorithm](puzzle.png){#id .class width=227 height=550}
+![Puzzle with fitness of 68 generated by genetic algorithm](puzzle.png)
 
 ### Graphs
 
-See Figures 2 to 5.
+*See Figures 2 to 5*
 
-![Fitness over number of generations for 5x5 puzzle](genalgo5.png){#id .class width=576 height=576}
+![Fitness over number of generations for 5x5 puzzle](genalgo5.png)
 
-![Fitness over number of generations for 7x7 puzzle](genalgo7.png){#id .class width=576 height=576}
+![Fitness over number of generations for 7x7 puzzle](genalgo7.png)
 
-![Fitness over number of generations for 9x9 puzzle](genalgo9.png){#id .class width=576 height=576}
+![Fitness over number of generations for 9x9 puzzle](genalgo9.png)
 
-![Fitness over number of generations for 11x11 puzzle](genalgo11.png){#id .class width=576 height=576}
+![Fitness over number of generations for 11x11 puzzle](genalgo11.png)
 
+\newpage
 ## Task 8
+
+### n = 40 Puzzle
+
+*See Figures 6 and 7*
+
+method:			genetic algorithm  
+fitness:		942  
+generations:	160000  
+pop size:		800  
+survival rate:	0.3  
+mutation rate:	0.018  
+solution:		kjsdhfjksdhf
+
+![40x40 puzzle generated by genetic algorithm with fitness 942](puzzle40.png)
+
+![40x40 puzzle generated by genetic algorithm with fitness 942 (BFS process)](sol40.png)
+
+### n = 20 Puzzle
+
+*See Figures 8 and 9*
+
+method:			genetic algorithm  
+fitness:		323  
+generations:	40000  
+pop size:		400  
+survival rate:	0.3  
+mutation rate:	0.018  
+solution:  
+`D R D U D U D U D U R D U D U D U D L U R L R L R L R U D U L R L U D U R L D U U D U D R L U R L R L D R U R L D D U D U R D R D L R L R L R R U L D U U D U D U U L R L U D R U U U D L R L R L R L U D U U D D U U D D U R L R L L R L R L R L R D U D U D U L R R L R L R U D U D D L U D U D U D D U D D D U D L U R L L L R L R L R U D U L R L R R R U D U D D L U R U D U D L R U L U R D U D L L R L R L R L R L L R L R L U D U R L L U R R D U D D L R U L L R L D U U D U D U R L R D L R R R L R L D U U D U L R L D U L R L U D R L R L L R L R U D U L R U R L R D U U D D U D U D L U U D R L U R L R R L L R D L R L U R L D U D D U D D U R R D U D`
+
+![20x20 puzzle generated by genetic algorithm with fitness 323](puzzle20.png)
+
+![20x20 puzzle generated by genetic algorithm with fitness 323 (BFS process)](puzzle20.png)
