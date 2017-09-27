@@ -53,6 +53,22 @@
                 http.send(null);
             }
 
+            function getHillClimbPuzzle() {
+                n = getN();
+                var http = new XMLHttpRequest();
+                http.onreadystatechange = function() {
+                    if (http.readyState == 4 && http.status == 200) {
+                        var response = JSON.parse(http.responseText);
+                        if (response['Fitness'] > bestFitness) {
+                            bestFitness = response['Fitness']
+                            displayPuzzle(n, response);
+                        }
+                    }
+                }
+                http.open("GET", 'http://172.31.115.33:5000/climb?n=' + n, true);
+                http.send(null);
+            }
+
             function createTable(div, n, items) {
                 var table = document.createElement('table');
                 var row = null;
@@ -89,9 +105,10 @@
             <option value="9">9</option>
             <option value="11">11</option>
             <option value="20">20</option>
+            <option value="40">40</option>
         </select>
         <button onclick="getGenAlgoPuzzle()">GEN ALGO</button>
-        <button>HILL CLIMBING</button>
+        <button onclick="getHillClimbPuzzle()">HILL CLIMBING</button>
         <div id="iterations" style="margin-top:40px"></div>
         <div id="solution"></div>
         <div id="puzzleTable" style="margin-top:40px"></div>

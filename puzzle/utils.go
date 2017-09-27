@@ -1,7 +1,6 @@
 package puzzle
 
 import "math/rand"
-import "fmt"
 
 func ValidMoves(n int, cell int, val int) []int {
 	moves := make([]int, 4)
@@ -56,14 +55,4 @@ func RandomPuzzle(n int, cm []int) []int {
 		p[index] = rand.Intn(max) + 1
 	}
 	return p
-}
-
-func PrintTable(n int, p []int) {
-	for index, val := range p {
-		fmt.Printf("%3d", val)
-		if (index+1)%n == 0 {
-			fmt.Println()
-		}
-	}
-	fmt.Println()
 }

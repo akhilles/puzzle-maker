@@ -3,13 +3,8 @@ package puzzle
 import (
 	"fmt"
 	"math/rand"
-	"strconv"
 	"sync"
 	"time"
-
-	"gonum.org/v1/plot"
-	"gonum.org/v1/plot/plotter"
-	"gonum.org/v1/plot/vg"
 )
 
 func initPopulation(n int, size int, cm []int) ([][]int, []int) {
@@ -100,39 +95,7 @@ func mutate(n int, child []int, cm []int, mutRate float32) int {
 	return fitness
 }
 
-func GetPlot(n int, gens int, survRate float32, mutRate float32, count int) {
-	lines := make([][]int, count)
-	for i := range lines {
-		_, _, _, line := GeneticPuzzle(n, gens, survRate, mutRate)
-		lines[i] = line
-	}
-
-	p, _ := plot.New()
-	p.Title.Text = "Genetic Algorithm, N = " + strconv.Itoa(n)
-	p.X.Label.Text = "generation"
-	p.Y.Label.Text = "fitness"
-	p.X.Min = 0
-	p.X.Max = float64(gens)
-	p.Y.Min = 0
-	p.Y.Max = float64(n*n - 1)
-	p.Add(plotter.NewGrid())
-	pts := make(plotter.XYs, len(lines[0]))
-
-	for i := range pts {
-		pts[i].X = float64(i * 10)
-		sum := 0
-		for _, line := range lines {
-			sum += line[i]
-		}
-		pts[i].Y = float64(sum) / float64(count)
-	}
-
-	l, _ := plotter.NewLine(pts)
-	p.Add(l)
-	p.Save(6*vg.Inch, 6*vg.Inch, "genalgo"+strconv.Itoa(n)+".png")
-}
-
-func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, []int, int, []int) {
+func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, []int, int) {
 	start := time.Now()
 
 	sizePop := n * n * 2
@@ -147,7 +110,6 @@ func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, [
 
 	bestPuzzle := population[0]
 	bestFitness := populationFitness[0]
-	genFitness := make([]int, 0, gens/10)
 
 	for i := 0; i < gens; i++ {
 		survivors := pickSurvivors(population, populationFitness, elitism, survRate)
@@ -155,10 +117,6 @@ func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, [
 		if populationFitness[0] > bestFitness {
 			bestPuzzle = population[0]
 			bestFitness = populationFitness[0]
-		}
-
-		if i%10 == 0 {
-			genFitness = append(genFitness, bestFitness-n*n)
 		}
 
 		var wg sync.WaitGroup
@@ -190,5 +148,5 @@ func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, [
 	fmt.Printf("Fitness:  %d, ", bestFitness-n*n)
 	fmt.Printf("Duration: %s\n", elapsed)
 
-	return bestPuzzle, dbfs, fit, genFitness
+	return bestPuzzle, dbfs, fit
 }
