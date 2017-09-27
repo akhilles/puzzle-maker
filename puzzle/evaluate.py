@@ -7,12 +7,18 @@ def gen_random(n=5):
     puzzle[n-1][n-1] = 0
     return np.array(puzzle)
 
-def readFromText():
-    pass
+def readFromText(name = 'solve.txt'):
+    f = open(name,'r+')
+    n = int(f.readline())
+    puzzle = []
+    for line in f:
+        puzzle.append(line.split())
+    puzzle = np.array(puzzle,dtype=int)
+    return puzzle
+
 
 def solutionChain(sol):
     n = np.shape(sol)[0]
-    print(n)
     curr = [n-1,n-1]
     chain = []
 
@@ -20,6 +26,29 @@ def solutionChain(sol):
         chain.insert(0,curr)
         curr = list(sol[curr[0],curr[1]])
     return chain
+
+def solutionString(chain):
+    x,y = 0,0
+    ans = []
+
+    if(len(chain)==1):
+        return 'no solution'
+
+    for i in chain:
+        dx = x-i[1]
+        dy = y-i[0]
+        if(dx>0):
+            ans.append('left')
+        elif(dx<0):
+            ans.append('right')
+        elif(dy>0):
+            ans.append('up')
+        elif(dy<0):
+            ans.append('down')
+        y,x = i
+    return ans
+
+
 
 
 def evaluate(puzzle, getSol = False):
@@ -103,9 +132,17 @@ if __name__=='__main__':
                 4 3 1 3 4;\
                 2 3 1 1 3;\
                 1 1 3 2 0')
-    puz = np.array(m)
+    puz = np.array(n)
     print(puz)
     solution = evaluate(puz,getSol=True)
     print(solution)
     chain = solutionChain(solution)
     print(chain)
+    direction = solutionString(chain)
+    print(direction)
+
+    sol = evaluate(readFromText('solve.txt'),getSol=True)
+    chain = solutionChain(sol)
+    dir = solutionString(chain)
+    print(dir)
+
