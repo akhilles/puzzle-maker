@@ -17,19 +17,14 @@ matrix.
 Examples of different evaluations.
 
 ![5X5 bad](bad5.png)
-
 ![7X7 bad](bad7.png)
-
 ![9X9 bad](bad9.png)
 
-![11X11 bad](bad11.png)
-
 ![5X5 good](good5.png)
-
 ![7X7 good](good7.png)
-
 ![9X9 good](good9.png)
 
+\newpage
 \newpage
 ## Task 3
 The basic hill climbing approach was run for one thousand iterations for each puzzle size to 
@@ -47,6 +42,7 @@ was able to yield an evaluation of 88.
 
 ![Basic hill climbing for 11x11 puzzle deep](plots/11by11deep.png)
 
+\newpage
 \newpage
 ## Task 4
 The hill climbing approach with random restarts was run for one thousand iterations for each puzzle size to 
