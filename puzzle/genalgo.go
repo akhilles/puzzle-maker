@@ -98,25 +98,25 @@ func mutate(n int, child []int, cm []int, mutRate float32) int {
 func GeneticPuzzle(n int, gens int, survRate float32, mutRate float32) ([]int, []int, int, []string) {
 	start := time.Now()
 
-	sizePop := n * n * 2
+	sizePop := 2400
 	mutRate *= float32(n * n)
-	elitism := int(float32(sizePop) * survRate * 0.2)
-	if elitism%2 == 1 {
-		elitism++
-	}
+	elitism := 70
 
 	cm := ConstraintMatrix(n)
 	population, populationFitness := initPopulation(n, sizePop, cm)
-
 	bestPuzzle := population[0]
 	bestFitness := populationFitness[0]
 
 	for i := 0; i < gens; i++ {
+		if i%5000 == 0 {
+			fmt.Println("GEN", i, "FITNESS", bestFitness-n*n)
+		}
 		survivors := pickSurvivors(population, populationFitness, elitism, survRate)
 
 		if populationFitness[0] > bestFitness {
 			bestPuzzle = population[0]
 			bestFitness = populationFitness[0]
+			fmt.Println("GEN", i, "FITNESS", bestFitness-n*n)
 		}
 
 		var wg sync.WaitGroup

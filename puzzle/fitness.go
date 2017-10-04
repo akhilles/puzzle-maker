@@ -29,7 +29,7 @@ func Evaluate(n int, cells []int) (int, []int) {
 		}
 	}
 	if depthBFS[goal] != 0 {
-		return depthBFS[goal] + n*n, depthBFS
+		return depthBFS[goal] + visited, depthBFS
 	}
 	return visited, depthBFS
 }

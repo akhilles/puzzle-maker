@@ -32,7 +32,7 @@ func main() {
 func random(w http.ResponseWriter, r *http.Request) {
 	// parameters
 	// init pop = n * n * 2
-	gens := 4000
+	gens := 160000
 	var selRate, mutRate float32
 	selRate = 0.3
 	mutRate = 0.018

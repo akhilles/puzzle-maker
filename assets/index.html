@@ -14,10 +14,14 @@
             }
         </style>
         <script lang="JavaScript">
+            Notification.requestPermission().then(function(result) {
+                console.log(result);
+            });
 
             function getN() {
                 var sel = document.getElementById("n");
                 return sel.options[sel.selectedIndex].value;
+                
             }
 
             function displayPuzzle(n, puzzle) {
@@ -44,6 +48,7 @@
                     if (http.readyState == 4 && http.status == 200) {
                         var response = JSON.parse(http.responseText);
                         displayPuzzle(n, response);
+                        var n = new Notification("DONE",null);
                     }
                 }
                 http.open("GET", '/genalgo?n=' + n, true);
@@ -59,7 +64,7 @@
                         displayPuzzle(n, response);
                     }
                 }
-                http.open("GET", 'http://172.31.115.33:5000/climb?n=' + n, true);
+                http.open("GET", 'http://172.31.111.47:5000/climb?n=' + n, true);
                 http.send(null);
             }
 
@@ -105,7 +110,7 @@
             <option value="11">11</option>
             <option value="20">20</option>
             <option value="30">30</option>
-            <option value="40">40</option>
+            <option value="39">39</option>
         </select>
         <button onclick="getGenAlgoPuzzle()">GEN ALGO</button>
         <button onclick="getHillClimbPuzzle()">HILL CLIMBING</button>
